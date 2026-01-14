@@ -55,4 +55,4 @@ Para ejecutar este proyecto ejecute los siguientes comandos en su terminal:
 
 * **Modularidad:** Si mañana se decide cambiar el modelo de pérdida satelital por uno de la **ITU-R P.618** (para lluvia), solo se requiere modificar `src/physics.py` sin romper los gráficos ni la lógica de `main.py`.
 * **Reproducibilidad:** El uso de `requirements.txt` elimina el error "ModuleNotFoundError".
-* **Escalabilidad:** Esta estructura es compatible con el entrenamiento de los agentes de **Deep Reinforcement Learning (DRL)** mencionados en el archivo [1], permitiendo añadir una carpeta `src/agents/` en el futuro.
+* **Escalabilidad:** Esta estructura es compatible con el entrenamiento de los agentes de **Deep Reinforcement Learning (DRL)**  permitiendo añadir una carpeta `src/agents/` en el futuro.
