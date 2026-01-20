@@ -6,8 +6,7 @@ Proyecto de Python para simulación de redes STIN (Space-Terrestrial Integrated 
 
 **Doctorado en Ciencias Computacionales**
 
-**Autores:** Xavier Durazno Sojos, David Galarza Garc´ıa, Pablo Salamea
-Cordero
+**Autores:** Xavier Durazno Sojos, David Galarza García, Pablo Salamea Cordero
 
 ## Disponible en GitHub
 
