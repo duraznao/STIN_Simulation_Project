@@ -4,17 +4,27 @@ Generación de gráficos usando Matplotlib.
 import matplotlib.pyplot as plt
 import os
 
-def plot_final_results(df_t, df_s, df_stress, output_path='plots/'):
+def plot_final_results(df_t, df_s, df_stress, df_uma=None, output_path='plots/'):
     if not os.path.exists(output_path): os.makedirs(output_path)
     plt.style.use('bmh')
 
-    # FIGURA 1: Pathloss y SINR Terrestre
+    # FIGURA 1: Pathloss y SINR Terrestre (Comparativo)
     fig1, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    
+    # Modelo Simple
     for sc in df_t['Scenario'].unique():
         data = df_t[df_t['Scenario'] == sc]
-        ax1.plot(data['Distance_km'], data['PathLoss_dB'], label=sc, linewidth=2)
-        ax2.plot(data['Distance_km'], data['SINR_dB'], label=sc, linewidth=2)
-    ax1.set_title('Pathloss Terrestre', fontweight='bold')
+        ax1.plot(data['Distance_km'], data['PathLoss_dB'], label=sc, linewidth=2, linestyle='-')
+        ax2.plot(data['Distance_km'], data['SINR_dB'], label=sc, linewidth=2, linestyle='-')
+        
+    # Modelo 3GPP UMa
+    if df_uma is not None:
+        for sc in df_uma['Scenario'].unique():
+            data = df_uma[df_uma['Scenario'] == sc]
+            ax1.plot(data['Distance_km'], data['PathLoss_dB'], label=sc, linewidth=2, linestyle='--')
+            ax2.plot(data['Distance_km'], data['SINR_dB'], label=sc, linewidth=2, linestyle='--')
+
+    ax1.set_title('Pathloss Terrestre: Simple vs 3GPP UMa', fontweight='bold')
     ax1.set_xlabel('Distancia (km)')
     ax1.set_ylabel('Pérdida (dB)')
     ax2.set_title('SINR Terrestre', fontweight='bold')

@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import os
 from src.scenarios import get_all_scenarios
-from src.physics import pathloss_terrestrial, pathloss_satellite, calculate_sinr
+from src.physics import pathloss_terrestrial, pathloss_satellite, calculate_sinr, pathloss_3gpp_uma
 from src.constants import P_TX_BS, P_TX_LEO, BW_BS, BW_LEO
 from src.visualizer import plot_final_results
 from src.visualizerv2 import plot_final_results_v2
@@ -20,7 +20,7 @@ def main():
     dist_km = np.linspace(0.1, 15, 200)
     elev_deg = np.linspace(5, 90, 180)
 
-    # 1. Simulación Terrestre
+    # 1. Simulación Terrestre (Modelo Exponencial Simple)
     data_t = []
     for s in sc['terrestrial']:
         pl = pathloss_terrestrial(dist_km, s['phi'])
@@ -29,6 +29,17 @@ def main():
             data_t.append({'Distance_km': d, 'PathLoss_dB': p, 'SINR_dB': snr, 'Scenario': s['name']})
     df_t = pd.DataFrame(data_t)
     df_t.to_csv('data/terrestrial_analysis_sinr.csv', index=False)
+
+    # 1.5 Simulación Terrestre 3GPP UMa
+    data_uma = []
+    for s in sc['terrestrial_3gpp']:
+        # pathloss_3gpp_uma(d_2d_km, h_bs, h_ut, f_c_ghz)
+        pl = pathloss_3gpp_uma(dist_km, s['h_bs'], s['h_ut'], s['f'])
+        sinr = [calculate_sinr(p, P_TX_BS, BW_BS) for p in pl]
+        for d, p, snr in zip(dist_km, pl, sinr):
+            data_uma.append({'Distance_km': d, 'PathLoss_dB': p, 'SINR_dB': snr, 'Scenario': s['name']})
+    df_uma = pd.DataFrame(data_uma)
+    df_uma.to_csv('data/terrestrial_3gpp_sinr.csv', index=False)
 
     # 2. Simulación Satelital (Bandas)
     data_s = []
@@ -53,7 +64,7 @@ def main():
     # Visualización Final
     
     # Con MatPlotLib 
-    plot_final_results(df_t, df_s, df_stress)
+    plot_final_results(df_t, df_s, df_stress, df_uma)
 
     # Con Plotly
     plot_final_results_v2(df_t, df_s, df_stress, output_path='plots/')

@@ -36,6 +36,42 @@ def pathloss_terrestrial(d_km, phi):
     # Evitamos log(0) asegurando una distancia mínima de 1 metro
     return ZETA + 10 * phi * np.log10(np.maximum(d_km, 0.001) / D0)
 
+# Modelo 3GPP TR 38.901 UMa (Urban Macro)
+def pathloss_3gpp_uma(d_2d_km, h_bs, h_ut, f_c_ghz):
+    """
+    Calcula el Pathloss UMa (Urban Macro) según 3GPP TR 38.901 Tabla 7.4.1-1.
+    Soporta distancias en km (se convierten a metros internamente).
+    
+    Args:
+        d_2d_km (float/array): Distancia horizontal en km.
+        h_bs (float): Altura estación base (metros).
+        h_ut (float): Altura usuario (metros).
+        f_c_ghz (float): Frecuencia portadora en GHz.
+    """
+    # Conversión de unidades y constantes
+    d_2d = d_2d_km * 1000.0  # km a metros
+    d_3d = np.sqrt(d_2d**2 + (h_bs - h_ut)**2)
+    
+    # Check simple para evitar errores con d=0
+    d_2d = np.maximum(d_2d, 1.0) 
+    d_3d = np.maximum(d_3d, 1.0)
+
+    # Probabilidad de LoS (Ecuación 7.4.1-1)
+    # P_LoS = min(18/d_2d, 1) * (1 - exp(-d_2d/63)) + exp(-d_2d/63)
+    p_los = np.minimum(18.0 / d_2d, 1.0) * (1 - np.exp(-d_2d / 63.0)) + np.exp(-d_2d / 63.0)
+    
+    # Pathloss LoS (UMa-LoS)
+    # PL_LoS = 28.0 + 22*log10(d_3d) + 20*log10(f_c)
+    pl_los = 28.0 + 22.0 * np.log10(d_3d) + 20.0 * np.log10(f_c_ghz)
+    
+    # Pathloss NLoS (UMa-NLoS)
+    pl_nlos_prime = 13.54 + 39.08 * np.log10(d_3d) + 20.0 * np.log10(f_c_ghz)
+    pl_nlos = np.maximum(pl_los, pl_nlos_prime)
+    
+    # Retornamos valor esperado para curvas suaves en gráficas
+    return p_los * pl_los + (1 - p_los) * pl_nlos
+
+
 def pathloss_satellite(f_ghz, theta_deg, h):
     """
     Calcula la pérdida total para el enlace satelital LEO.
