@@ -1,6 +1,13 @@
-# Modelado Matemático y Evaluación Computacional de la Propagación de Canal en Redes Integradas Terrestre-Satelitales para 6G
+# Evaluación Comparativa de Pérdidas de Trayectoria en Segmentos Terrestres y Satelitales para Redes Integradas 6G
 
 Proyecto de Python para simulación de redes STIN (Space-Terrestrial Integrated Networks) y análisis de Path Loss.
+
+**Universidad Politécnica Salesiana**
+
+**Doctorado en Ciencias Computacionales**
+
+**Autores:** Xavier Durazno Sojos, David Galarza Garc´ıa, Pablo Salamea
+Cordero
 
 ## Disponible en GitHub
 
